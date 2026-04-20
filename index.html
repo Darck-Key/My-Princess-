@@ -1,94 +1,104 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para Ti...</title>
     
-    <!-- Fuentes de Google -->
+    <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 
     <style>
         /* =========================================
-           VARIABLES Y CONFIGURACIÓN BASE
+           VARIABLES
            ========================================= */
         :root {
-            --bg-dark: #1a141a;
-            --bg-gradient-1: #2d1f2d;
-            --bg-gradient-2: #3d2b3d;
+            --bg-base: #2d1f2d;
+            --bg-gradient-1: #3d2a3d;
+            --bg-gradient-2: #4a334a;
             
-            --text-main: #f5ecee;
-            --text-muted: #d1b8bc;
+            --text-primary: #f5ecef;
+            --text-secondary: #d4c0c8;
             
-            --accent-rose: #eec2cc;
-            --accent-lilac: #b4a2b4;
-            --accent-glow: rgba(238, 194, 204, 0.6);
+            --accent-rose: #e8cdd4;
+            --accent-rose-light: #f2e4e8;
+            --accent-blush: #f0d8dc;
+            --accent-lavender: #b8a0b8;
+            --accent-lilac: #c4b0c4;
+            --accent-glow: rgba(235, 208, 216, 0.5);
+            --accent-glow-strong: rgba(235, 208, 216, 0.8);
             
-            --font-heading: 'Playfair Display', serif;
-            --font-body: 'Inter', sans-serif;
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'Montserrat', sans-serif;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
         }
 
         body {
             font-family: var(--font-body);
-            background: var(--bg-dark);
-            background: radial-gradient(circle at center, var(--bg-gradient-2) 0%, var(--bg-gradient-1) 50%, var(--bg-dark) 100%);
-            color: var(--text-main);
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: radial-gradient(ellipse at 50% 30%, var(--bg-gradient-2) 0%, var(--bg-base) 60%);
+            color: var(--text-primary);
         }
 
-        /* Partículas Globales Resaltadas */
-        #global-particles {
+        /* =========================================
+           PARTÍCULAS
+           ========================================= */
+        .particles-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 5;
-            overflow: hidden;
+            z-index: 0;
         }
 
         .particle {
             position: absolute;
-            background: radial-gradient(circle, #ffffff 0%, var(--accent-rose) 40%, transparent 80%);
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(232,196,208,0.3) 60%, transparent 100%);
             border-radius: 50%;
-            opacity: 0.6;
-            filter: drop-shadow(0 0 5px #fff);
-            animation: drift linear infinite;
+            animation: float-up linear infinite;
         }
 
-        @keyframes drift {
-            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        @keyframes float-up {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
 
-        /* Sistema de Fases */
+        /* =========================================
+           SISTEMA DE FASES
+           ========================================= */
         .phase {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            min-height: 100%;
             display: flex;
             flex-direction: column;
-            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
+            align-items: center;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
             z-index: 10;
+            padding: 30px 15px;
         }
 
         .phase.hidden {
@@ -97,351 +107,632 @@
             pointer-events: none;
         }
 
-        .phase.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: all;
-        }
-
         /* =========================================
            COMPONENTES COMUNES
            ========================================= */
-        .reveal-item {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
-        }
-
-        .reveal-item.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .btn-magico {
-            background: rgba(255, 255, 255, 0.05);
+        .btn-nav {
+            background: transparent;
             border: 1px solid var(--accent-rose);
             color: var(--accent-rose);
-            padding: 14px 35px;
-            border-radius: 40px;
+            padding: 12px 35px;
+            border-radius: 50px;
             cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            text-transform: uppercase;
+            font-family: var(--font-body);
+            font-size: 0.8rem;
             letter-spacing: 2px;
-            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(5px);
-            z-index: 20;
-            margin: 20px 0;
+            margin-top: 20px;
         }
 
-        .btn-magico:hover {
+        .btn-nav:hover {
             background: var(--accent-rose);
-            color: var(--bg-dark);
+            color: var(--bg-base);
             box-shadow: 0 0 30px var(--accent-glow);
             transform: translateY(-2px);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* =========================================
            FASE 1: JUEGO
            ========================================= */
-        .game-header { text-align: center; padding: 40px 20px 20px; z-index: 12; }
-        .game-header h1 { font-family: var(--font-heading); font-size: 2.3rem; color: var(--accent-rose); text-shadow: 0 0 15px var(--accent-glow); }
-        .progress-wrapper { width: 80%; max-width: 400px; margin: 0 auto 20px; z-index: 12; }
-        .progress-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-lilac), var(--accent-rose)); transition: width 0.4s; }
-        #game-area { flex-grow: 1; position: relative; width: 100%; }
-        .heart { position: absolute; width: 45px; height: 45px; cursor: pointer; animation: spawn 0.5s forwards; }
-        .heart svg { fill: var(--accent-rose); filter: drop-shadow(0 0 8px var(--accent-glow)); }
+        .game-header {
+            text-align: center;
+            z-index: 15;
+        }
 
-        @keyframes spawn {
-            0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+        .game-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--accent-rose);
+            letter-spacing: 3px;
+            text-shadow: 0 0 25px var(--accent-glow);
+        }
+
+        .game-instruction {
+            font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        .progress-container {
+            width: min(85%, 350px);
+            margin: 20px auto;
+            z-index: 15;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-lavender), var(--accent-rose));
+            transition: width 0.3s ease-out;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .game-area {
+            flex: 1;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            animation: heart-appear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: transform 0.2s ease;
+            z-index: 12;
+        }
+
+        .heart:hover {
+            transform: scale(1.15);
+        }
+
+        .heart svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--accent-rose);
+            filter: drop-shadow(0 0 10px var(--accent-glow));
+        }
+
+        @keyframes heart-appear {
+            0% { transform: scale(0) rotate(-15deg); opacity: 0; }
             100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
-        .heart.clicked { animation: popHeart 0.5s forwards; pointer-events: none; }
-        @keyframes popHeart {
+
+        .heart.clicked {
+            animation: heart-pop 0.4s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes heart-pop {
             0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(3); opacity: 0; filter: blur(4px); }
+            50% { transform: scale(1.5); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; filter: blur(3px); }
         }
 
         /* =========================================
-           FASE 2: CARTA
+           FASE 2: FOTO + MENSAJE
            ========================================= */
-        #phase-2 { justify-content: center; align-items: center; text-align: center; }
-        .bouquet-img { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; box-shadow: 0 0 35px var(--accent-glow); border: 3px solid var(--accent-rose); margin-bottom: 20px;}
-        h2.main-message { font-family: var(--font-heading); font-size: 2.8rem; font-style: italic; color: var(--accent-rose); margin-bottom: 25px; text-shadow: 0 0 20px var(--accent-glow); }
-        .letter { font-size: 1.1rem; line-height: 1.9; margin-bottom: 30px; padding: 0 25px; max-width: 600px; font-weight: 300; }
+        .photo-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .photo-frame {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-rose);
+            overflow: hidden;
+            margin: 0 auto 25px;
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .message-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 7vw, 3rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--accent-rose);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .message-text {
+            font-family: var(--font-display);
+            font-size: clamp(1rem, 3vw, 1.15rem);
+            line-height: 1.9;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto 30px;
+            padding: 0 15px;
+        }
 
         /* =========================================
-           FASE 3: GALERÍA
+           FASE 3: GALERÍA FLIP
            ========================================= */
-        #phase-3 { padding: 40px 20px; overflow-y: auto; align-items: center;}
-        .photo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 800px; margin: 40px 0; }
-        .flip-card { width: 100%; height: 320px; perspective: 1000px; cursor: pointer; }
-        .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
-        .flip-card.is-flipped .flip-card-inner { transform: rotateY(180deg); }
-        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; border: 1px solid var(--accent-rose); overflow: hidden; }
-        .flip-card-front img { width: 100%; height: 100%; object-fit: cover; }
-        .flip-card-back { background: var(--bg-gradient-1); transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; padding: 15px; font-family: var(--font-heading); font-style: italic; color: var(--accent-rose); }
+        .gallery-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            font-style: italic;
+            color: var(--accent-rose);
+            margin-bottom: 30px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: min(90%, 400px);
+            margin-bottom: 25px;
+        }
+
+        .flip-card {
+            height: 180px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.is-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            border: 1px solid var(--accent-rose);
+            overflow: hidden;
+        }
+
+        .flip-card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, var(--bg-gradient-2), var(--bg-gradient-1));
+            transform: rotateY(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .flip-card-back p {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1rem;
+            color: var(--accent-rose);
+            line-height: 1.5;
+        }
 
         /* =========================================
-           FASE 4: GALAXIA
+           FASE 4: GALAXIA ORBITAL
            ========================================= */
-        #phase-4 { justify-content: center; align-items: center; text-align: center; }
-        .galaxy-container { position: relative; width: 100%; height: 500px; display: flex; justify-content: center; align-items: center; }
-        .galaxy-sun { width: 140px; height: 140px; border-radius: 50%; border: 3px solid var(--accent-rose); box-shadow: 0 0 50px var(--accent-glow); overflow: hidden; z-index: 5; }
-        .galaxy-sun img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .phrase-planet {
+        .galaxy-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-style: italic;
+            color: var(--accent-rose);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .galaxy-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: -20px;
+            margin-bottom: 30px;
+        }
+
+        .galaxy-container {
+            position: relative;
+            width: min(90%, 350px);
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .central-star {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-rose);
+            overflow: hidden;
+            z-index: 5;
+            box-shadow: 0 0 40px var(--accent-glow-strong);
+        }
+
+        .central-star img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .orbital-phrase {
             position: absolute;
             white-space: nowrap;
-            font-family: var(--font-heading);
+            font-family: var(--font-display);
             font-style: italic;
-            background: rgba(238, 194, 204, 0.1);
+            font-size: 0.85rem;
+            background: rgba(232, 208, 216, 0.2);
             backdrop-filter: blur(4px);
-            padding: 8px 18px;
-            border-radius: 25px;
+            padding: 8px 16px;
+            border-radius: 20px;
             border: 1px solid var(--accent-rose);
-            color: #fff;
-            animation: orbit linear infinite;
+            color: var(--text-primary);
+        }
+
+        /* Clases dinámicas para órbitas */
+        .orbit-1 { --orbit-radius: 130px; --orbit-duration: 8s; }
+        .orbit-2 { --orbit-radius: 160px; --orbit-duration: 12s; }
+        .orbit-3 { --orbit-radius: 190px; --orbit-duration: 15s; }
+
+        .orbital-phrase {
+            animation: orbit var(--orbit-duration) linear infinite;
         }
 
         @keyframes orbit {
-            from { transform: rotate(0deg) translateX(var(--orbit-dist)) rotate(0deg); }
-            to { transform: rotate(360deg) translateX(var(--orbit-dist)) rotate(-360deg); }
+            from { transform: rotate(0deg) translate(var(--orbit-radius)) rotate(0deg); }
+            to { transform: rotate(360deg) translate(var(--orbit-radius)) rotate(-360deg); }
         }
 
-        @media (max-width: 600px) {
-            .photo-grid { grid-template-columns: 1fr; }
-            h2.main-message { font-size: 2rem; }
-            .galaxy-sun { width: 100px; height: 100px; }
-            .phrase-planet { font-size: 0.8rem; }
+        /* Audio elemento ocultado */
+        #bg-music {
+            display: none;
         }
-        #player {
-            position: absolute;
-            left: -9999px;
+
+        /* =========================================
+           RESPONSIVE
+           ========================================= */
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            
+            .flip-card {
+                height: 150px;
+            }
+            
+            .photo-frame {
+                width: 110px;
+                height: 110px;
+            }
+            
+            .galaxy-container {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .central-star {
+                width: 80px;
+                height: 80px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="global-particles"></div>
+    <!-- Partículas de fondo -->
+    <div class="particles-bg" id="particles-bg"></div>
 
-    <!-- FASE 1: JUEGO -->
-    <div id="phase-1" class="phase active">
+    <!-- Audio -->
+    <audio id="bg-music" preload="auto">
+        <source src="eazt.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- =========================================
+       FASE 1: JUEGO
+       ========================================= -->
+    <div id="phase-1" class="phase">
         <div class="game-header">
-            <h1>Sincronía</h1>
-            <p>Atrapa 10 corazones.</p>
+            <h1 class="game-title">Sincronía</h1>
+            <p class="game-instruction">Toca los corazones para llenar el vínculo</p>
         </div>
-        <div class="progress-wrapper">
-            <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-        </div>
-        <div id="game-area"></div>
 
-        <div id="music-launcher" style="display:none; text-align:center; z-index:20; margin-top:20px;">
-            <button id="start-music-btn" class="btn-magico">🎵 Reproducir música</button>
-                <p style="margin-top:10px; color: var(--text-muted); font-size: 0.9rem;">
-                    Ya completaste el reto. Dale clic para empezar.
-                </p>
+        <div class="progress-container">
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
         </div>
+
+        <div class="game-area" id="game-area"></div>
+
+        <button class="btn-nav" id="btn-fase1">Continuar</button>
     </div>
 
-    <!-- FASE 2: CARTA -->
+    <!-- =========================================
+       FASE 2: FOTO + MENSAJE
+       ========================================= -->
     <div id="phase-2" class="phase hidden">
-        <div class="reveal-item"><img src="flor.jpg" alt="Ramo" class="bouquet-img" onerror="this.src='https://images.unsplash.com/photo-1563241527-300ecb188c03?w=400'"></div>
-        <h2 class="main-message reveal-item">Lo lograste...</h2>
-        <div class="letter reveal-item">
-            <p>A veces, las cosas más hermosas de la vida requieren paciencia y cuidado. Gracias por iluminar mis días con tu luz única.</p>
+        <div class="photo-container">
+            <div class="photo-frame reveal delay-1">
+                <!-- Placeholder imagen - cambiar por tu ruta -->
+                <img src="https://images.unsplash.com/photo-1516589174184-c68526674fd4?w=300" alt="Foto especial" 
+                     onerror="this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300'">
+            </div>
+
+            <h2 class="message-title reveal delay-2">Lo lograste...</h2>
+
+            <p class="message-text reveal delay-3">
+                A veces las cosas más bellas requieren tiempo y paciencia. 
+                Gracias por ilumin mis días con tu luz única. Eres mi coincidencia favorite.
+                <br><br>
+                <span style="font-style: italic; color: var(--accent-rose);">— Con todo mi corazón</span>
+            </p>
+
+            <button class="btn-nav reveal delay-4" id="btn-fase2">Continuar</button>
         </div>
-        <div class="reveal-item">
-            <button id="play-audio-btn" class="btn-magico">🎵 Escuchar</button>
-            <button id="to-gallery-btn" class="btn-magico">Ver Momentos ➔</button>
-        </div>
-            <iframe 
-                id="RDmN4NNG_YHeY"
-                width="0"
-                height="0"
-                src="https://youtu.be/mN4NNG_YHeY?list=RDmN4NNG_YHeY"
-                frameborder="0"
-                allow="autoplay">
-            </iframe>
     </div>
 
-    <!-- FASE 3: GALERÍA -->
+    <!-- =========================================
+       FASE 3: GALERÍA FLIP
+       ========================================= -->
     <div id="phase-3" class="phase hidden">
-        <h2 class="main-message reveal-item">Nuestros Momentos</h2>
-        <div class="photo-grid">
-            <div class="flip-card reveal-item" onclick="this.classList.toggle('is-flipped')">
+        <h2 class="gallery-title reveal">Nuestros Momentos</h2>
+
+        <div class="gallery-grid">
+            <!-- Tarjeta 1 -->
+            <div class="flip-card reveal" onclick="this.classList.toggle('is-flipped')">
                 <div class="flip-card-inner">
-                    <div class="flip-card-front"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500" alt="1"></div>
-                    <div class="flip-card-back"><p>"En tu mirada encontré mi refugio."</p></div>
+                    <div class="flip-card-front">
+                        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400" alt="1">
+                    </div>
+                    <div class="flip-card-back">
+                        <p>"En tu mirada encontré mi hogar."</p>
+                    </div>
                 </div>
             </div>
-            <div class="flip-card reveal-item" onclick="this.classList.toggle('is-flipped')" style="transition-delay: 0.2s;">
+
+            <!-- Tarjeta 2 -->
+            <div class="flip-card reveal" style="transition-delay: 0.15s;" onclick="this.classList.toggle('is-flipped')">
                 <div class="flip-card-inner">
-                    <div class="flip-card-front"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=500" alt="2"></div>
-                    <div class="flip-card-back"><p>"Cada segundo contigo es un regalo."</p></div>
+                    <div class="flip-card-front">
+                        <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400" alt="2">
+                    </div>
+                    <div class="flip-card-back">
+                        <p>"Cada segundo contigo es un tesoro."</p>
+                    </div>
                 </div>
             </div>
-            <div class="flip-card reveal-item" onclick="this.classList.toggle('is-flipped')" style="transition-delay: 0.4s;">
+
+            <!-- Tarjeta 3 -->
+            <div class="flip-card reveal" style="transition-delay: 0.3s;" onclick="this.classList.toggle('is-flipped')">
                 <div class="flip-card-inner">
-                    <div class="flip-card-front"><img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=500" alt="3"></div>
-                    <div class="flip-card-back"><p>"Eres mi coincidencia favorita."</p></div>
+                    <div class="flip-card-front">
+                        <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=400" alt="3">
+                    </div>
+                    <div class="flip-card-back">
+                        <p>"Eres mi razón favorite de sonreír."</p>
+                    </div>
                 </div>
             </div>
-            <div class="flip-card reveal-item" onclick="this.classList.toggle('is-flipped')" style="transition-delay: 0.6s;">
+
+            <!-- Tarjeta 4 -->
+            <div class="flip-card reveal" style="transition-delay: 0.45s;" onclick="this.classList.toggle('is-flipped')">
                 <div class="flip-card-inner">
-                    <div class="flip-card-front"><img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=500" alt="4"></div>
-                    <div class="flip-card-back"><p>"Siempre quiero que sea contigo."</p></div>
+                    <div class="flip-card-front">
+                        <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=400" alt="4">
+                    </div>
+                    <div class="flip-card-back">
+                        <p>"Quiero infinitos contigo."</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <button id="to-galaxy-btn" class="btn-magico reveal-item">Ver mi Galaxia ➔</button>
+
+        <button class="btn-nav" id="btn-fase3">Continuar</button>
     </div>
 
-    <!-- FASE 4: GALAXIA -->
+    <!-- =========================================
+       FASE 4: GALAXIA ORBITAL
+       ========================================= -->
     <div id="phase-4" class="phase hidden">
-        <div class="reveal-item" style="margin-bottom: 30px;">
-            <h2 class="main-message">Mas que quererte, te amo</h2>
-            <p style="color: var(--text-muted); font-style: italic;">y mucho más de lo que crees...</p>
-        </div>
-        
-        <div class="galaxy-container reveal-item">
-            <div class="galaxy-sun">
-                <img src="https://images.unsplash.com/photo-1516589174184-c68526674fd4?w=400" alt="Sol" onerror="this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400'">
+        <h2 class="galaxy-title reveal">Mi Universo Eres Tú</h2>
+        <p class="galaxy-subtitle reveal">y más de lo que imaginas...</p>
+
+        <div class="galaxy-container reveal">
+            <div class="central-star">
+                <img src="https://images.unsplash.com/photo-1516589174184-c68526674fd4?w=300" alt="Sol" 
+                     onerror="this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300'">
             </div>
-            
-            <div class="phrase-planet" style="--orbit-dist: 150px; animation-duration: 7s;">Eres hermosa</div>
-            <div class="phrase-planet" style="--orbit-dist: -170px; animation-duration: 11s;">Puedes con todo</div>
-            <div class="phrase-planet" style="--orbit-dist: 200px; animation-duration: 14s;">Eres mi mayor meta</div>
-            <div class="phrase-planet" style="--orbit-dist: -230px; animation-duration: 9s;">Mi luz favorita</div>
-            <div class="phrase-planet" style="--orbit-dist: 120px; animation-duration: 16s;">Te admiro tanto</div>
+
+            <!-- Frases orbitales -->
+            <div class="orbital-phrase orbit-1">Eres hermosa</div>
+            <div class="orbital-phrase orbit-2">Mi luz favorita</div>
+            <div class="orbital-phrase orbit-3">Te necesito</div>
+            <div class="orbital-phrase orbit-1" style="animation-direction: reverse;">Mi todo</div>
+            <div class="orbital-phrase orbit-2" style="animation-direction: reverse;">Eres única</div>
+            <div class="orbital-phrase orbit-3" style="animation-direction: reverse;">Te adoro</div>
         </div>
-        
-        <button onclick="location.reload()" class="btn-magico reveal-item" style="margin-top: 40px; font-size: 0.7rem;">Reiniciar Experiencia</button>
+
+        <button class="btn-nav" onclick="location.reload()" style="margin-top: 40px;">Reiniciar</button>
     </div>
-   
+
     <script>
-document.addEventListener('DOMContentLoaded', () => {
+        (function() {
+            // =========================================
+            // VARIABLES
+            // =========================================
+            let progress = 0;
+            let gameFinished = false;
+            let spawnInterval;
+            
+            const progressFill = document.getElementById('progress-fill');
+            const gameArea = document.getElementById('game-area');
+            const phases = [
+                document.getElementById('phase-1'),
+                document.getElementById('phase-2'),
+                document.getElementById('phase-3'),
+                document.getElementById('phase-4')
+            ];
+            const music = document.getElementById('bg-music');
+            let musicPlaying = false;
 
-    let progress = 0;
-    let gameFinished = false;
-    let heartInterval;
-
-    const gameArea = document.getElementById('game-area');
-    const progressFill = document.getElementById('progress-fill');
-
-    const musicLauncher = document.getElementById('music-launcher');
-    const startMusicBtn = document.getElementById('start-music-btn');
-
-    const audio = document.getElementById('bg-audio');
-    const playAudioBtn = document.getElementById('play-audio-btn');
-
-    const phases = [
-        document.getElementById('phase-1'),
-        document.getElementById('phase-2'),
-        document.getElementById('phase-3'),
-        document.getElementById('phase-4')
-    ];
-
-    audio.volume = 0.5;
-
-    // --- Partículas ---
-    function startParticles() {
-        const container = document.getElementById('global-particles');
-        setInterval(() => {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            p.style.width = p.style.height = (Math.random() * 5 + 3) + 'px';
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            container.appendChild(p);
-            setTimeout(() => p.remove(), 10000);
-        }, 400);
-    }
-    startParticles();
-
-    // --- Cambio de Fase ---
-    function changePhase(index) {
-        phases.forEach(p => p.classList.replace('active', 'hidden'));
-        phases[index].classList.replace('hidden', 'active');
-
-        setTimeout(() => {
-            phases[index].querySelectorAll('.reveal-item').forEach((el, i) => {
-                setTimeout(() => el.classList.add('visible'), i * 200);
-            });
-        }, 100);
-    }
-
-    // --- Juego ---
-    function spawnHeart() {
-        if (progress >= 100 || gameFinished) return;
-
-        const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.innerHTML = `<svg viewBox="0 0 32 29.6" width="40"><path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/></svg>`;
-
-        const rect = gameArea.getBoundingClientRect();
-        heart.style.left = Math.random() * (rect.width - 50) + 'px';
-        heart.style.top = Math.random() * (rect.height - 50) + 'px';
-
-        heart.onclick = () => {
-            if (gameFinished) return;
-
-            heart.classList.add('clicked');
-            progress += 10;
-            progressFill.style.width = progress + '%';
-
-            if (progress >= 100) {
-                gameFinished = true;
-                clearInterval(heartInterval);
-
-                setTimeout(() => {
-                    musicLauncher.style.display = 'block';
-                }, 500);
+            // =========================================
+            // PARTÍCULAS
+            // =========================================
+            function createParticles() {
+                const container = document.getElementById('particles-bg');
+                const count = 12;
+                
+                for (let i = 0; i < count; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    p.style.left = Math.random() * 100 + '%';
+                    p.style.width = (Math.random() * 3 + 2) + 'px';
+                    p.style.height = p.style.width;
+                    p.style.animationDuration = (Math.random() * 6 + 8) + 's';
+                    p.style.animationDelay = (Math.random() * 8) + 's';
+                    container.appendChild(p);
+                }
             }
 
-            setTimeout(() => heart.remove(), 500);
-        };
+            // =========================================
+            // CAMBIO DE FASE
+            // =========================================
+            function changePhase(toIndex) {
+                phases.forEach(p => p.classList.add('hidden'));
+                phases[toIndex].classList.remove('hidden');
 
-        gameArea.appendChild(heart);
-        setTimeout(() => heart.remove(), 3000);
-    }
+                // Mostrar elementos reveal
+                setTimeout(() => {
+                    phases[toIndex].querySelectorAll('.reveal').forEach(el => {
+                        el.classList.add('visible');
+                    });
+                }, 200);
+            }
 
-    heartInterval = setInterval(spawnHeart, 800);
+            // =========================================
+            // REPRODUCCIÓN DE MÚSICA
+            // =========================================
+            function playMusic() {
+                if (musicPlaying) return;
+                
+                const playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        musicPlaying = true;
+                    }).catch(e => {
+                        console.log('Esperando interacción del usuario');
+                    });
+                }
+            }
 
-    // --- BOTÓN PRINCIPAL (arranca música) ---
-    startMusicBtn.onclick = async () => {
-        try {
-            await audio.play();
-            playAudioBtn.innerText = "⏸ Pausar";
+            // =========================================
+            // JUEGO: CORAZONES
+            // =========================================
+            function spawnHeart() {
+                if (gameFinished) return;
 
-            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = `
+                    <svg viewBox="0 0 32 29.6">
+                        <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+                    </svg>
+                `;
+
+                const rect = gameArea.getBoundingClientRect();
+                heart.style.left = Math.random() * (rect.width - 60) + 'px';
+                heart.style.top = Math.random() * (rect.height - 60) + 'px';
+
+                heart.addEventListener('click', function(e) {
+                    if (gameFinished) return;
+                    
+                    this.classList.add('clicked');
+                    progress = Math.min(100, progress + 10);
+                    progressFill.style.width = progress + '%';
+
+                    if (progress >= 100) {
+                        gameFinished = true;
+                        clearInterval(spawnInterval);
+                    }
+
+                    setTimeout(() => this.remove(), 400);
+                });
+
+                gameArea.appendChild(heart);
+
+                setTimeout(() => {
+                    if (heart.parentNode && !heart.classList.contains('clicked')) {
+                        heart.style.transition = 'opacity 0.3s';
+                        heart.style.opacity = '0';
+                        setTimeout(() => heart.remove(), 300);
+                    }
+                }, 2500);
+            }
+
+            // Iniciar juego
+            spawnInterval = setInterval(spawnHeart, 850);
+
+            // =========================================
+            // NAVEGACIÓN CON BOTONES
+            // =========================================
+            document.getElementById('btn-fase1').addEventListener('click', function() {
+                playMusic();
                 changePhase(1);
-            }, 500);
+            });
 
-        } catch (error) {
-            console.error("Error al reproducir:", error);
-        }
-    };
+            document.getElementById('btn-fase2').addEventListener('click', function() {
+                changePhase(2);
+            });
 
-    // --- BOTÓN DENTRO DE LA CARTA ---
-    playAudioBtn.onclick = function() {
-        if (audio.paused) {
-            audio.play();
-            this.innerText = "⏸ Pausar";
-        } else {
-            audio.pause();
-            this.innerText = "▶ Escuchar";
-        }
-    };
+            document.getElementById('btn-fase3').addEventListener('click', function() {
+                changePhase(3);
+            });
 
-    // --- Navegación ---
-    document.getElementById('to-gallery-btn').onclick = () => changePhase(2);
-    document.getElementById('phase-3').querySelector('.btn-magico').onclick = () => changePhase(3);
+            // Inicializar
+            createParticles();
 
-});
-</script>
+        })();
+    </script>
 </body>
 </html>
