@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -218,6 +218,10 @@
             .galaxy-sun { width: 100px; height: 100px; }
             .phrase-planet { font-size: 0.8rem; }
         }
+        #player {
+            position: absolute;
+            left: -9999px;
+        }
     </style>
 </head>
 <body>
@@ -228,12 +232,19 @@
     <div id="phase-1" class="phase active">
         <div class="game-header">
             <h1>Sincronía</h1>
-            <p>Atrapa 10 corazones para desbloquear mi mensaje.</p>
+            <p>Atrapa 10 corazones.</p>
         </div>
         <div class="progress-wrapper">
             <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
         </div>
         <div id="game-area"></div>
+
+        <div id="music-launcher" style="display:none; text-align:center; z-index:20; margin-top:20px;">
+            <button id="start-music-btn" class="btn-magico">🎵 Reproducir música</button>
+                <p style="margin-top:10px; color: var(--text-muted); font-size: 0.9rem;">
+                    Ya completaste el reto. Dale clic para empezar.
+                </p>
+        </div>
     </div>
 
     <!-- FASE 2: CARTA -->
@@ -247,9 +258,14 @@
             <button id="play-audio-btn" class="btn-magico">🎵 Escuchar</button>
             <button id="to-gallery-btn" class="btn-magico">Ver Momentos ➔</button>
         </div>
-        <audio id="bg-audio" loop>
-            <source src="eazt.mp3" type="audio/mpeg">
-        </audio>
+            <iframe 
+                id="RDmN4NNG_YHeY"
+                width="0"
+                height="0"
+                src="https://youtu.be/mN4NNG_YHeY?list=RDmN4NNG_YHeY"
+                frameborder="0"
+                allow="autoplay">
+            </iframe>
     </div>
 
     <!-- FASE 3: GALERÍA -->
@@ -305,78 +321,127 @@
         
         <button onclick="location.reload()" class="btn-magico reveal-item" style="margin-top: 40px; font-size: 0.7rem;">Reiniciar Experiencia</button>
     </div>
-
+   
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let progress = 0;
-            const gameArea = document.getElementById('game-area');
-            const progressFill = document.getElementById('progress-fill');
-            
-            const phases = [
-                document.getElementById('phase-1'),
-                document.getElementById('phase-2'),
-                document.getElementById('phase-3'),
-                document.getElementById('phase-4')
-            ];
+document.addEventListener('DOMContentLoaded', () => {
 
-            // --- Partículas ---
-            function startParticles() {
-                const container = document.getElementById('global-particles');
-                setInterval(() => {
-                    const p = document.createElement('div');
-                    p.className = 'particle';
-                    p.style.width = p.style.height = (Math.random() * 5 + 3) + 'px';
-                    p.style.left = Math.random() * 100 + 'vw';
-                    p.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                    container.appendChild(p);
-                    setTimeout(() => p.remove(), 10000);
-                }, 400);
-            }
-            startParticles();
+    let progress = 0;
+    let gameFinished = false;
+    let heartInterval;
 
-            // --- Cambio de Fase ---
-            function changePhase(index) {
-                phases.forEach(p => p.classList.replace('active', 'hidden'));
-                phases[index].classList.replace('hidden', 'active');
+    const gameArea = document.getElementById('game-area');
+    const progressFill = document.getElementById('progress-fill');
+
+    const musicLauncher = document.getElementById('music-launcher');
+    const startMusicBtn = document.getElementById('start-music-btn');
+
+    const audio = document.getElementById('bg-audio');
+    const playAudioBtn = document.getElementById('play-audio-btn');
+
+    const phases = [
+        document.getElementById('phase-1'),
+        document.getElementById('phase-2'),
+        document.getElementById('phase-3'),
+        document.getElementById('phase-4')
+    ];
+
+    audio.volume = 0.5;
+
+    // --- Partículas ---
+    function startParticles() {
+        const container = document.getElementById('global-particles');
+        setInterval(() => {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.width = p.style.height = (Math.random() * 5 + 3) + 'px';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            container.appendChild(p);
+            setTimeout(() => p.remove(), 10000);
+        }, 400);
+    }
+    startParticles();
+
+    // --- Cambio de Fase ---
+    function changePhase(index) {
+        phases.forEach(p => p.classList.replace('active', 'hidden'));
+        phases[index].classList.replace('hidden', 'active');
+
+        setTimeout(() => {
+            phases[index].querySelectorAll('.reveal-item').forEach((el, i) => {
+                setTimeout(() => el.classList.add('visible'), i * 200);
+            });
+        }, 100);
+    }
+
+    // --- Juego ---
+    function spawnHeart() {
+        if (progress >= 100 || gameFinished) return;
+
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerHTML = `<svg viewBox="0 0 32 29.6" width="40"><path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/></svg>`;
+
+        const rect = gameArea.getBoundingClientRect();
+        heart.style.left = Math.random() * (rect.width - 50) + 'px';
+        heart.style.top = Math.random() * (rect.height - 50) + 'px';
+
+        heart.onclick = () => {
+            if (gameFinished) return;
+
+            heart.classList.add('clicked');
+            progress += 10;
+            progressFill.style.width = progress + '%';
+
+            if (progress >= 100) {
+                gameFinished = true;
+                clearInterval(heartInterval);
+
                 setTimeout(() => {
-                    phases[index].querySelectorAll('.reveal-item').forEach((el, i) => {
-                        setTimeout(() => el.classList.add('visible'), i * 200);
-                    });
-                }, 100);
+                    musicLauncher.style.display = 'block';
+                }, 500);
             }
 
-            // --- Juego ---
-            function spawnHeart() {
-                if (progress >= 100) return;
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.innerHTML = `<svg viewBox="0 0 32 29.6" width="40"><path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/></svg>`;
-                const rect = gameArea.getBoundingClientRect();
-                heart.style.left = Math.random() * (rect.width - 50) + 'px';
-                heart.style.top = Math.random() * (rect.height - 50) + 'px';
-                
-                heart.onclick = () => {
-                    heart.classList.add('clicked');
-                    progress += 10;
-                    progressFill.style.width = progress + '%';
-                    if (progress >= 100) setTimeout(() => changePhase(1), 600);
-                    setTimeout(() => heart.remove(), 500);
-                };
-                gameArea.appendChild(heart);
-                setTimeout(() => heart.remove(), 3000);
-            }
-            setInterval(spawnHeart, 800);
+            setTimeout(() => heart.remove(), 500);
+        };
 
-            // --- Botones ---
-            document.getElementById('play-audio-btn').onclick = function() {
-                const audio = document.getElementById('bg-audio');
-                if(audio.paused) { audio.play(); this.innerText = "⏸ Pausar"; }
-                else { audio.pause(); this.innerText = "▶ Escuchar"; }
-            };
+        gameArea.appendChild(heart);
+        setTimeout(() => heart.remove(), 3000);
+    }
 
-            document.getElementById('to-gallery-btn').onclick = () => changePhase(2);
-            document.getElementById('phase-3').querySelector('.btn-magico').onclick = () => changePhase(3);
-        });
-    </script>
+    heartInterval = setInterval(spawnHeart, 800);
+
+    // --- BOTÓN PRINCIPAL (arranca música) ---
+    startMusicBtn.onclick = async () => {
+        try {
+            await audio.play();
+            playAudioBtn.innerText = "⏸ Pausar";
+
+            setTimeout(() => {
+                changePhase(1);
+            }, 500);
+
+        } catch (error) {
+            console.error("Error al reproducir:", error);
+        }
+    };
+
+    // --- BOTÓN DENTRO DE LA CARTA ---
+    playAudioBtn.onclick = function() {
+        if (audio.paused) {
+            audio.play();
+            this.innerText = "⏸ Pausar";
+        } else {
+            audio.pause();
+            this.innerText = "▶ Escuchar";
+        }
+    };
+
+    // --- Navegación ---
+    document.getElementById('to-gallery-btn').onclick = () => changePhase(2);
+    document.getElementById('phase-3').querySelector('.btn-magico').onclick = () => changePhase(3);
+
+});
+</script>
 </body>
 </html>
