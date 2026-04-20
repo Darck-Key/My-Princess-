@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -218,10 +218,6 @@
             .galaxy-sun { width: 100px; height: 100px; }
             .phrase-planet { font-size: 0.8rem; }
         }
-        #player {
-            position: absolute;
-            left: -9999px;
-        }
     </style>
 </head>
 <body>
@@ -232,7 +228,7 @@
     <div id="phase-1" class="phase active">
         <div class="game-header">
             <h1>Sincronía</h1>
-            <p>Atrapa 10 corazones.</p>
+            <p>Atrapa 10 corazones para desbloquear mi mensaje.</p>
         </div>
         <div class="progress-wrapper">
             <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
@@ -251,14 +247,9 @@
             <button id="play-audio-btn" class="btn-magico">🎵 Escuchar</button>
             <button id="to-gallery-btn" class="btn-magico">Ver Momentos ➔</button>
         </div>
-            <iframe 
-                id="RDmN4NNG_YHeY"
-                width="0"
-                height="0"
-                src="https://youtu.be/mN4NNG_YHeY?list=RDmN4NNG_YHeY"
-                frameborder="0"
-                allow="autoplay">
-            </iframe>
+        <audio id="bg-audio" loop>
+            <source src="eazt.mp3" type="audio/mpeg">
+        </audio>
     </div>
 
     <!-- FASE 3: GALERÍA -->
@@ -315,13 +306,7 @@
         <button onclick="location.reload()" class="btn-magico reveal-item" style="margin-top: 40px; font-size: 0.7rem;">Reiniciar Experiencia</button>
     </div>
 
-    <script src="https://www.youtube.com/iframe_api"></script>    
     <script>
-        let player;
-
-        function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player');
-    }
         document.addEventListener('DOMContentLoaded', () => {
             let progress = 0;
             const gameArea = document.getElementById('game-area');
@@ -384,18 +369,10 @@
 
             // --- Botones ---
             document.getElementById('play-audio-btn').onclick = function() {
-    if (!player) return;
-
-    const state = player.getPlayerState();
-
-    if (state !== 1) { // no está reproduciendo
-        player.playVideo();
-        this.innerText = "⏸ Pausar";
-    } else {
-        player.pauseVideo();
-        this.innerText = "▶ Escuchar";
-    }
-};
+                const audio = document.getElementById('bg-audio');
+                if(audio.paused) { audio.play(); this.innerText = "⏸ Pausar"; }
+                else { audio.pause(); this.innerText = "▶ Escuchar"; }
+            };
 
             document.getElementById('to-gallery-btn').onclick = () => changePhase(2);
             document.getElementById('phase-3').querySelector('.btn-magico').onclick = () => changePhase(3);
