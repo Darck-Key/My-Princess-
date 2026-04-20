@@ -218,6 +218,10 @@
             .galaxy-sun { width: 100px; height: 100px; }
             .phrase-planet { font-size: 0.8rem; }
         }
+        #player {
+            position: absolute;
+            left: -9999px;
+        }
     </style>
 </head>
 <body>
@@ -247,7 +251,14 @@
             <button id="play-audio-btn" class="btn-magico">🎵 Escuchar</button>
             <button id="to-gallery-btn" class="btn-magico">Ver Momentos ➔</button>
         </div>
-        <audio id="bg-audio" loop><source src="https://www.youtube.com/watch?v=mN4NNG_YHeY&list=RDmN4NNG_YHeY&start_radio=1" type="audio/mpeg"></audio>
+            <iframe 
+                id="RDmN4NNG_YHeY"
+                width="0"
+                height="0"
+                src="https://youtu.be/mN4NNG_YHeY?list=RDmN4NNG_YHeY"
+                frameborder="0"
+                allow="autoplay">
+            </iframe>
     </div>
 
     <!-- FASE 3: GALERÍA -->
@@ -304,7 +315,13 @@
         <button onclick="location.reload()" class="btn-magico reveal-item" style="margin-top: 40px; font-size: 0.7rem;">Reiniciar Experiencia</button>
     </div>
 
+    <script src="https://www.youtube.com/iframe_api"></script>    
     <script>
+        let player;
+
+        function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player');
+    }
         document.addEventListener('DOMContentLoaded', () => {
             let progress = 0;
             const gameArea = document.getElementById('game-area');
@@ -367,10 +384,18 @@
 
             // --- Botones ---
             document.getElementById('play-audio-btn').onclick = function() {
-                const audio = document.getElementById('bg-audio');
-                if(audio.paused) { audio.play(); this.innerText = "⏸ Pausar"; }
-                else { audio.pause(); this.innerText = "▶ Escuchar"; }
-            };
+    if (!player) return;
+
+    const state = player.getPlayerState();
+
+    if (state !== 1) { // no está reproduciendo
+        player.playVideo();
+        this.innerText = "⏸ Pausar";
+    } else {
+        player.pauseVideo();
+        this.innerText = "▶ Escuchar";
+    }
+};
 
             document.getElementById('to-gallery-btn').onclick = () => changePhase(2);
             document.getElementById('phase-3').querySelector('.btn-magico').onclick = () => changePhase(3);
